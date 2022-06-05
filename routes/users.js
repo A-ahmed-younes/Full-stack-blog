@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
   const u = [...users]
   let {skip,take}=req.query
   skip=skip|| 0
-  take=take||10
+  take=take|| 10
   
   res.send(u.splice(skip, take));
 

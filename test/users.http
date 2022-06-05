@@ -1,0 +1,26 @@
+GET http://localhost:3000/users
+###
+
+POST http://localhost:3000/users
+Content-type: application/json 
+
+{
+    "name" : "Ahmed-Younes",
+    "username" : "Ahmed"
+
+}
+
+###
+
+PATCH http://localhost:3000/users
+Content-type: application/json 
+
+{
+    "id" : 11,
+    "name" : "Ahmed-Younes",
+    "username" : "Ahmed",
+    "email" : "ahmedyounes@gmail.com"
+
+}
+###
+GET http://localhost:3000/users/11
