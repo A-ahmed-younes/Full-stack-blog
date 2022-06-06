@@ -1,7 +1,7 @@
 $(document).ready(async function () {
 
     let rowContainer = $("#articles");
-    
+
     let categories = $('#categories')
     await getCategories().done(function (data) {
       $.each(data, function (index, { id, nom }) {
@@ -144,3 +144,21 @@ $(document).ready(async function () {
       dataType: "json",
     })
   }
+
+  function getArticles(take = 10, skip = 0 ) {
+  
+    return $.ajax({
+      url: `http://localhost:3000/articles?limit=${take}&page=${skip + 1}`,
+      method: "GET",
+      dataType: "json",
+    })
+  }
+
+  getArticles(10, 0).done(function ({ articles }) {
+
+    $.each(articles, function (indexes, article) {
+    })
+
+  }).fail(function (jqXHR, textStatus) {
+    alert("Request failed: " + textStatus)
+  })
