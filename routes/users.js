@@ -1,39 +1,64 @@
 var express = require('express');
 var router = express.Router();
 
-const users = require('../data/users.json')
+const {PrismaClient} = require("@prisma/client")
+
+const  prisma  = new PrismaClient()
+
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  console.log(req.query)
-  const u = [...users]
-  let {skip,take}=req.query
-  skip=skip|| 0
-  take=take|| 10
-  
-  res.send(u.splice(skip, take));
-
+router.get('/', async function(req, res, next) {
+  const users = await prisma.user.findMany({
+    include:{ articles:true}
+  });
+  res.json(users);
 });
-/* GET user by id */
-router.get('/:id', function(req, res, next) {
-  const user = users.find((u)=> u.id === parseInt(req.params.id))
-  const r = user ? user : 'not found'
-  res.send(r);
-})
+
+
+router.get('/:id', async function(req, res, next) {
+  // const  id = req.params.id;
+  const  {id} = req.params;
+  const user = await prisma.user.findUnique({
+    where:{
+      id : parseInt(id)
+    },
+  });
+  res.json(user);
+});
 /* delete user by id */
-router.delete('/:id' , (req,res)=> {
-  console.log (req.params.id);
-  res.send('the user has been deleted');
+router.delete('/:id',async function(req,res,next){
+  const  {id} = req.params;
+  const user = await prisma.user.delete
+  ({
+    where:{
+      id : parseInt(id)
+    },
+  });
+  res.json(user);
 })
+
 /* post user */
-router.post ('/' , (req,res) => {
-  console.log(req.body)
-  res.send(req.body)
+router.post ('/' , async (req,res) => {
+  const user = await prisma.user.create({
+    data : req.body,
+  })
+  res.send(user)
 })
 /* patch user */
-router.patch('/' , (req,res) => {
-  console.log(req.body)
-  res.send(req.body)
+router.patch('/:id',async function(req,res,next){
+  const {id} = req.params;
+  const data=req.body;
+  const user= await prisma.user.update({
+    where:{
+      id:parseInt(id)
+    },
+    data:data,
+    include:{
+      articles:false,
+    }
+  })
+  res.json(user);
 })
+
 
 module.exports = router;
